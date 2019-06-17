@@ -26,6 +26,7 @@ import javax.persistence.criteria.*;
 import javax.persistence.metamodel.EntityType;
 import java.util.List;
 
+@Transactional
 @Repository
 public class MoviesBean {
 
@@ -36,7 +37,6 @@ public class MoviesBean {
         return entityManager.find(Movie.class, id);
     }
 
-    @Transactional
     public void addMovie(Movie movie) {
         entityManager.persist(movie);
     }
