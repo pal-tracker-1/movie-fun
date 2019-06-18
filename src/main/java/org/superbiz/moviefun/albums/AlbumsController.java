@@ -12,11 +12,8 @@ import org.superbiz.moviefun.blobstore.BlobStore;
 
 import java.io.*;
 import java.net.URISyntaxException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Map;
 
-import static java.lang.ClassLoader.getSystemResource;
 import static java.lang.String.format;
 
 @Controller
@@ -58,7 +55,8 @@ public class AlbumsController {
 
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         byte[] buffer = new byte[1024];
-        for (int len = 0; (len = blob.inputStream.read(buffer)) > 0;) {
+        InputStream is = blob.getInputStream();
+        for (int len = 0; (len = is.read(buffer)) > 0; ) {
             bos.write(buffer, 0, len);
         }
         byte[] imageBytes = bos.toByteArray();
@@ -86,19 +84,5 @@ public class AlbumsController {
     private File getCoverFile(@PathVariable long albumId) {
         String coverFileName = format("covers/%d", albumId);
         return new File(coverFileName);
-    }
-
-    private Path getExistingCoverPath(@PathVariable long albumId) throws URISyntaxException {
-        File coverFile = getCoverFile(albumId);
-        Path coverFilePath;
-
-        if (coverFile.exists()) {
-            coverFilePath = coverFile.toPath();
-        } else {
-            coverFilePath = Paths.get(getSystemResource("default-cover.jpg").toURI());
-        }
-
-
-        return coverFilePath;
     }
 }
