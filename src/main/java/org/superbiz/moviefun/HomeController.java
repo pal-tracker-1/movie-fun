@@ -2,7 +2,6 @@ package org.superbiz.moviefun;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.PlatformTransactionManager;
-import org.springframework.transaction.support.TransactionTemplate;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.superbiz.moviefun.albums.Album;
 import org.superbiz.moviefun.albums.AlbumFixtures;
@@ -41,26 +40,12 @@ public class HomeController {
     @GetMapping("/setup")
     public String setup(Map<String, Object> model) {
 
-        TransactionTemplate movieTemplate =
-                new TransactionTemplate(this.moviesPlatformTransactionManager);
-
-        movieTemplate.execute(transactionStatus -> {
-            for (Movie movie : movieFixtures.load()) {
-                moviesBean.addMovie(movie);
-            }
-            return null;
-        });
-
-        TransactionTemplate albumTemplate =
-                new TransactionTemplate(this.albumsPlatformTransactionManager);
-
-
-        albumTemplate.execute(transactionStatus -> {
-            for (Album album : albumFixtures.load()) {
-                albumsBean.addAlbum(album);
-            }
-            return null;
-        });
+        for (Movie movie : movieFixtures.load()) {
+            moviesBean.addMovie(movie);
+        }
+        for (Album album : albumFixtures.load()) {
+            albumsBean.addAlbum(album);
+        }
 
         model.put("movies", moviesBean.getMovies());
         model.put("albums", albumsBean.getAlbums());
